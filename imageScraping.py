@@ -59,17 +59,19 @@ def start(input_list):
 def join_items():
   os.chdir(targetDir)
   with open('photosresult.json', 'w') as f:
-    f.write("{\n")
+    json_object = {"namesItemsPhotos" : input_list}
+    photos = []
     for j in range(len(lista)):
       cerca = lista[j]
       with open(cerca, 'r') as fi :
         obj = json.load(fi)
         cerca = re.sub('\.json$','',cerca)
-        newDict = {"name" : cerca, "photos" : obj}
-        result_json = json.dumps(newDict, indent=2)
-        f.write('%s'%result_json)
-        f.write(",\n")
-    f.write("}\n")
+        newDict = {"name" : cerca, "numberPhotos" : len(obj),"photos" : obj}
+        photos.append(newDict)
+    json_object["aggregatePhotos"] = photos
+    result_json = json.dumps(json_object, indent=2)
+    f.write(result_json)
+    
   shutil.move(targetDir+"\photosresult.json" , fileDir+"\photosresult.json")
   os.chdir(fileDir)
 
@@ -85,20 +87,17 @@ def remove_logs_folder_and_result_file():
   if os.path.exists('photosresult.json'):
     os.remove('photosresult.json')
 
-input_list = ['AI SOLTERI DR. ANDREA GADOTTI', 'ALLA MADONNA DR. GIANMARCO CASAGRANDE', 'BETTA DR. MARCO',
-              'BOLGHERA TRENTO', 'CAMPAGNOLO DR.A VIRGINIA', 'COMUNALE 1 SAN GIUSEPPE', 'COMUNALE 10 COGNOLA', 'COMUNALE 2 AL SAN CAMILLO',
-              'COMUNALE 3 SAN PIO X', 'COMUNALE 4 CLARINA', 'COMUNALE 5 SAN DONA', 'COMUNALE 6 POVO', 'COMUNALE 7 MEANO', 'COMUNALE 8 MADONNA BIANCA',
-              'COMUNALE 9 PIEDICASTELLO', 'CRISTO RE DR.A MARCELLA FONTANA', "DALL'ARMI DR.I PATTINI", 'DE BATTTAGLIA DR.E SANDRA E GIULIANA BONI', 'DE GERLONI DR. PIER FRANCESCO',
-              'DI GARDOLO DR. RENATO BRANDOLANI', 'DISPENSARIO DI NOGAREDO', 'FRANZELLIN DR. VITTORIO ALA 2^ SEDE', 'GALLO DR. LAMBERTO', 'GMG DR.I RAVAGNANI E AGAZZANI',
-              'GRANDI DR. MARCO LEPORE', 'IGEA DR. MAHLOUL EL ZENNAR MOHAMMAD', 'LA DI RONCAFORT', 'MARTIGNANO DR.A FRANCESCA FERRI', 'MATTARELLO DR. GIUPPONI',
-              'SAN BARTOLAMEO DR. C. BERTOLINI', 'SAN LORENZO DR. BRUNO BIZZARO', 'SANTA CHIARA DR.I ALESSIA ED EDOARDO ABBONDI', 'VILLAZZANO DR. PAOLO BOLEGO']    
+input_list = ['AI SOLTERI DR. ANDREA GADOTTI', 'ALLA MADONNA DR. GIANMARCO CASAGRANDE']    
+
+input_set = set(input_list)
+input_list = list(input_set)
 
 remove_logs_folder_and_result_file()
 start(input_list)
 get_items(5, "", "")
 unique_items_on_list()
 join_items()
-
+print(lista)
 
 
 
